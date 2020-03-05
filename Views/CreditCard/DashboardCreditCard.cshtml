@@ -1,0 +1,190 @@
+<style>
+    h5{margin: 0px;}
+    b{display:inline-block;}
+    select{display: inline-block;}
+    .inrow{display: inline-block;}
+    .mb{padding-left: 12px;padding-right: 12px;padding-top: 6px;padding-bottom: 6px;}
+    .myB{margin: 0px;}
+    .mywidth{height: 25px;width: 40px;}
+    .myRow{display: inline-block;}
+</style>
+
+@model CreditCard
+@using PasswordKeeper.Controllers
+
+<div class="container">
+    <br>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardUser" asp-controller="User">Home</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="LogOut" asp-controller="Home">Log Out</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPassword" asp-controller="Password">Passwords</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link disabled" tabindex="-1" aria-disabled="true">Credit Cards</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPersonalInformation" asp-controller="PersonalInformation">Personal Information</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardContact" asp-controller="Contact">Contacts</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardNote" asp-controller="Note">Notes</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <h1 class="text-center">CREDIT CARDS</h1>
+    <br>
+    <div>
+        <p class="text-center">
+            <a class="btn btn-primary align-middle" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <b>ADD CARD</b>
+            </a>
+        </p>
+        <br>
+        <div class="collapse myWidth" id="collapseExample1">
+            <div class="card card-body">
+                <h3>Add Password</h3>
+                <form asp-action="CreateCreditCard" asp-controller="CreditCard" method="post">
+                    <div class="form-group">
+                        <span asp-validation-for="CardName"></span>
+                        <h5><label asp-for="CardName"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="CardName">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="CardNumber"></span>
+                        <h5><label asp-for="CardNumber"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="CardNumber">
+                    </div>
+                    @{
+                        var maxDate = (int)DateTime.Now.Year + 10;
+                        var minYear = (int)DateTime.Now.Year;
+                        var minMonth = (int)DateTime.Now.Month;
+                    }
+                    <div class="form-group">
+                        <span asp-validation-for="Expiration"></span>
+                        <h5><label asp-for="Expiration"></label></h5>
+                        <input type="month" min="@minYear-@minMonth" max="@maxDate-12" class="form-control form-control-lg" asp-for="Expiration" >
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="SecurityCode"></span>
+                        <h5><label asp-for="SecurityCode"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="SecurityCode">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary"><h5>ADD CARD</h5></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>    
+    <div id="accordion">
+        @foreach(var card in @ViewBag.AllCards)
+        {
+            <div class="card">
+                <div class="card-header text-center" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link " data-toggle="collapse" data-target="#collapse@(card.CreditCardId)" aria-expanded="true" aria-controls="collapse@(card.CreditCardId)">
+                                @{
+                                    var LastFour = @EncryptDecrypt.Decrypt(@card.CardNumber).Length-4;
+                                    var wholeLength = @EncryptDecrypt.Decrypt(@card.CardNumber).Length-1;
+                                    var finalLastFour = "";
+                                    for(var i = LastFour; i <= wholeLength; i++)
+                                    {
+                                        finalLastFour+= @EncryptDecrypt.Decrypt(@card.CardNumber)[i];
+                                    }
+                                }
+                            <h5>@card.CardName.ToUpper() - @card.CardType.ToUpper() - @finalLastFour</h5>
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse@(card.CreditCardId)" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <div >                                   
+                                    <h3 class="myRow align-middle myFont"><b>@card.CardName.ToUpper()</b></h3>
+                                </div>
+                                <br>
+                                <p class="myRow align-middle"><b>CARD NUMBER:  </b></p>
+                                <p class="myRow align-middle" id="p1">@EncryptDecrypt.Decrypt(@card.CardNumber)</p>
+                                <br>
+                                <p class="myRow align-middle"><b>EXP. DATE:  </b></p>
+                                <p class="myRow align-middle" id="p1">@card.Expiration.ToString("MM/yyyy")</p>
+                                <br>
+                                <p class="myRow align-middle"><b>SECURITY CODE:  </b>
+                                <p class="myRow align-middle" id="p1">@EncryptDecrypt.Decrypt(@card.SecurityCode)</p>
+                            </div>
+                            <div class="col text-right">
+                                <a asp-action="DeleteCreditCard" asp-controller="CreditCard" asp-route-creditcardId="@card.CreditCardId" class=" mb text-center badge badge-danger"><h5><b>DELETE</b></h5></a>
+                                <br>
+                                <br>
+                                <div>
+                                    <p class="myRow text-right">
+                                        <a class="mb btn btn-success align-middle" data-toggle="collapse" href="#collapseEdit@(card.CreditCardId)" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                            <b style="font-size: 20px; border:0px;">EDIT</b>
+                                        </a>
+                                    </p>
+                                    <div class="collapse myWidth" id="collapseEdit@(card.CreditCardId)">
+                                        <div class="card card-body">
+                                            <h3 class="text-left"><b>EDIT @card.CardName.ToUpper()</b></h3>
+                                            <form asp-action="UpdateCreditCard" asp-controller="CreditCard" asp-route-creditcardId="@card.CreditCardId" method="post">
+                                                <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId">
+                                                <input type="hidden" asp-for="CreditCardId" value="@card.CreditCardId">
+                                                <div class="form-group">
+                                                    <span asp-validation-for="CardName"></span>
+                                                    <h5 class="text-left"><label asp-for="CardName"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="CardName" value="@card.CardName">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="CardNumber"></span>
+                                                    <h5 class="text-left"><label asp-for="CardNumber"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="CardNumber" value="@EncryptDecrypt.Decrypt(@card.CardNumber)">
+                                                </div>
+                                                @{
+                                                    var maxDate = (int)DateTime.Now.Year + 10;
+                                                    var minYear = (int)DateTime.Now.Year;
+                                                    var minMonth = (int)DateTime.Now.Month;
+                                                    var cardYear = (int)@card.Expiration.Year;
+                                                    var cardMonth = (int)@card.Expiration.Month;
+                                                }
+                                                <div class="form-group">
+                                                    <span asp-validation-for="Expiration"></span>
+                                                    <h5 class="text-left"><label asp-for="Expiration"></label></h5>
+                                                    @if(@cardMonth <10)
+                                                    {
+                                                        <input type="month" max="@maxDate-12" min="@minYear-@minMonth" class="form-control form-control-lg" asp-for="Expiration" value="@cardYear-0@(cardMonth)">
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="month" max="@maxDate-12" min="@minYear-@minMonth" class="form-control form-control-lg" asp-for="Expiration" value="@cardYear-@cardMonth">
+                                                    }
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="SecurityCode"></span>
+                                                    <h5 class="text-left"><label asp-for="SecurityCode"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="SecurityCode" value="@EncryptDecrypt.Decrypt(@card.SecurityCode)">
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-success"><h5>UPDATE CARD</h5></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

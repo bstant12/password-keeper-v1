@@ -1,0 +1,75 @@
+<style>
+    .mywidth{width: 100px;}
+    img{margin-top:17px; height: 90px;}
+    .fat{width:115px;}
+    .skinny{width: 65px;}
+    .kindaSkinny{ width: 80px}
+</style>
+
+@model User
+
+<div class="container">
+    <br>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <h5><a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="LogOut" asp-controller="Home">Log Out</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <ul class="nav justify-content-center">
+        
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPassword" asp-controller="Password">Passwords</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardCreditCard" asp-controller="CreditCard">Credit Cards</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPersonalInformation" asp-controller="PersonalInformation">Personal Information</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardContact" asp-controller="Contact">Contacts</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardNote" asp-controller="Note">Notes</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <h1 class="text-center">HELLO, @ViewBag.User.FirstName.ToUpper()</h1>
+    <br>
+    <div class="row row-cols-2" style="height:185px;">
+        <div class="card text-center col" style="width: auto;height:175px;">
+            <img class="card-img-top mywidth rounded mx-auto d-block kindaSkinny" src="~/img/frontPage/password.png" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="mt-0 text-center"><a asp-action="DashboardPassword" asp-controller="Password" class="stretched-link text-center">Add Password</a></h5>                
+            </div>
+        </div>
+        <div class="card text-center col" style="width: auto;height:175px;">
+            <img class="card-img-top mywidth rounded mx-auto d-block fat" src="~/img/frontPage/creditcard.PNG" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="mt-0 text-center"><a asp-action="DashboardCreditCard" asp-controller="CreditCard" class="stretched-link text-center">Add Card</a></h5>                
+            </div>
+        </div>
+        <div class="card text-center col" style="width: auto;height:175px;">
+            <img class="card-img-top mywidth rounded mx-auto d-block fat" src="~/img/frontPage/personalinformation.PNG" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="mt-0 text-center"><a asp-action="DashboardPersonalInformation" asp-controller="PersonalInformation" class="stretched-link text-center">Add Info</a></h5>                
+            </div>
+        </div>
+        <div class="card text-center col" style="width: auto;height:175px;">
+            <img class="card-img-top mywidth rounded mx-auto d-block" src="~/img/frontPage/contact.PNG" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="mt-0 text-center"><a asp-action="DashboardContact" asp-controller="Contact" class="stretched-link text-center">Add Contact</a></h5>                
+            </div>
+        </div>
+        <div class="card text-center col" style="width: auto;height:175px;">
+            <img class="card-img-top mywidth rounded mx-auto d-block" src="~/img/frontPage/note.PNG" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="mt-0 text-center"><a asp-action="DashboardNote" asp-controller="Note" class="stretched-link text-center">Add Note</a></h5>                
+            </div>
+        </div>
+    </div>
+</div>

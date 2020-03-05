@@ -1,0 +1,145 @@
+<style>
+    h5{margin: 0px;}
+    b{display:inline-block;}
+    .inrow{display: inline-block;}
+    .mb{padding-left: 12px;padding-right: 12px;padding-top: 6px;padding-bottom: 6px;}
+    .myB{margin: 0px;}
+    .myRow{display: inline-block;}
+    .myWrap {rows:"5";}
+</style>
+
+@model Note
+@using PasswordKeeper.Models
+@using PasswordKeeper.Controllers
+
+<div class="container">
+    <br>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardUser" asp-controller="User">Home</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="LogOut" asp-controller="Home">Log Out</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <ul class="nav justify-content-center">
+        
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPassword" asp-controller="Password">Passwords</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardCreditCard" asp-controller="CreditCard">Credit Cards</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPersonalInformation" asp-controller="PersonalInformation">Personal Information</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardContact" asp-controller="Contact">Contacts</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link disabled" tabindex="-1" aria-disabled="true">Notes</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <h1 class="text-center">NOTES</h1>
+    <br>
+    <div>
+        <p class="text-center">
+            <a class="btn btn-primary align-middle" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <b>ADD NOTE</b>
+            </a>
+        </p>
+        <br>
+        <div class="collapse myWidth" id="collapseExample1">
+            <div class="card card-body">
+                <h3>Add Note</h3>
+                <form asp-action="CreateNote" asp-controller="Note" method="post">
+                    <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId">
+                    <div class="form-group">
+                        <span asp-validation-for="Name"></span>
+                        <h5><label asp-for="Name"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="Name">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="NoteContent"></span>
+                        <h5><label asp-for="NoteContent"></label></h5>
+                        <textarea class="form-control form-control-lg" asp-for="NoteContent" rows="10"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary"><h5>ADD</h5></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="accordion">
+        @foreach(var note in @ViewBag.AllNotes)
+        {
+            <div class="card">
+                <div class="card-header text-center" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link " data-toggle="collapse" data-target="#collapse@(note.NoteId)" aria-expanded="true" aria-controls="collapse@(note.NoteId)">
+                            <h5>@note.Name.ToUpper()</h5>
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse@(note.NoteId)" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h3 class="myRow align-middle myFont"><b>@note.Name.ToUpper()</b></h3>
+                                <br>
+                                <br>
+                                <p class="myRow align-middle"><b>NAME:  </b></p>
+                                <p class="myRow align-middle" id="p1">@note.Name</p>
+                                <br>
+                                <p class="myRow align-middle"><b>NOTE:  </b></p>
+                                <p class="myRow align-middle" id="p1">@EncryptDecrypt.Decrypt(@note.NoteContent)</p>
+                                <br>
+                            </div> 
+                            <div class="col text-right">
+                                <a asp-action="DeleteNote" asp-controller="Note" asp-route-noteId="@note.NoteId" class=" mb text-center badge badge-danger"><h5><b>DELETE</b></h5></a>
+                                <br>
+                                <br>
+                                <div>
+                                    <p class="myRow text-right">
+                                        <a class="mb btn btn-success align-middle" data-toggle="collapse" href="#collapseEdit@(note.NoteId)" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                            <b style="font-size: 20px; border:0px;">EDIT</b>
+                                        </a>
+                                    </p>
+                                    <div class="collapse myWidth" id="collapseEdit@(note.NoteId)">
+                                        <div class="card card-body">
+                                            <h3 class="text-left"><b>EDIT @note.Name.ToUpper()</b></h3>
+                                            <form action="/note/@note.NoteId/update" method="post">
+                                                <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId">
+                                                <div class="form-group">
+                                                    <span asp-validation-for="Name"></span>
+                                                    <h5 class="text-left"><label asp-for="Name"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="Name" value="@note.Name">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="NoteContent"></span>
+                                                    <h5 class="text-left"><label asp-for="NoteContent"></label></h5>
+                                                    @{
+                                                        string thisNote = EncryptDecrypt.Decrypt(note.NoteContent);
+                                                        @Html.TextArea("NoteContent", @thisNote, new {@class="form-control"})
+                                                    }
+                                                </div>
+                                                <div  class="form-group" style="margin-bottom: 0px;">
+                                                    <button type="submit" class="btn btn-success"><h5><b>UPDATE</b></h5></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

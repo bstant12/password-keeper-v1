@@ -1,0 +1,149 @@
+<style>
+    h5{margin: 0px;}
+    select{display: : inline-block;}
+    .inrow{display: inline-block;}
+    .mb{padding-left: 12px; padding-right: 12px; padding-top: 6px; padding-bottom: 6px;}
+    .myB{margin: 0px;}
+    h3{display: inline-block;}
+    .myMarg{margin-bottom: 8px;}
+</style>
+
+@model PersonalInformation
+@using PasswordKeeper.Models
+@using PasswordKeeper.Controllers
+
+<div class="container">
+    <br>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardUser" asp-controller="User">Home</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="LogOut" asp-controller="Home">Log Out</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <ul class="nav justify-content-center">
+        
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPassword" asp-controller="Password">Passwords</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardCreditCard" asp-controller="CreditCard">Credit Cards</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link disabled" tabindex="-1" aria-disabled="true">Personal Information</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardContact" asp-controller="Contact">Contacts</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardNote" asp-controller="Note">Notes</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <h1 class="text-center">PERSONAL INFORMATION</h1>
+    <br>
+    <div>
+        <p class="myRow text-center">
+            <a class="btn btn-primary align-middle" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <b>ADD INFORMATION</b>
+            </a>
+        </p>
+        <br>
+        <div class="collapse myWidth" id="collapseExample1">
+            <div class="card card-body">
+                <h3>Add Information</h3>
+                <form asp-action="CreatePersonalInformation" asp-controller="PersonalInformation" method="post">
+                    <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId">
+                    <div class="form-group">
+                        <span asp-validation-for="InfoName"></span>
+                        <h5><label asp-for="InfoName"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="InfoName">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="InfoContent"></span>
+                        <h5><label asp-for="InfoContent"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="InfoContent">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="InfoNote"></span>
+                        <h5><label>Notes:</label></h5>
+                        <input class="form-control form-control-lg" asp-for="InfoNote">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary"><h5>ADD</h5></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @{
+        var myInfo = @ViewBag.AllInfo;
+    }
+    <div id="accordion">
+        @foreach(var info in @ViewBag.AllInfo)
+        {
+            <div class="card">
+                <div class="card-header text-center" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link " data-toggle="collapse" data-target="#collapse@(info.PersonalInformationId)" aria-expanded="true" aria-controls="collapse@(info.PersonalInformationId)">
+                            <h5>@info.InfoName.ToUpper()</h5>
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse@(info.PersonalInformationId)" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <p style="font-size: 25px">@info.InfoName: <b class="myfs">@EncryptDecrypt.Decrypt(@info.InfoContent)</b></p>
+                                @if(@info.InfoNote != null)
+                                {
+                                    <p><b>NOTES: </b>@info.InfoNote</p>
+                                }
+                            </div>
+                            <div class="col text-right">
+                                <a asp-action="DeletePersonalInformation" asp-controller="PersonalInformation" asp-route-personalinformationId="@info.PersonalInformationId" class=" mb text-center badge badge-danger"><h5><b>DELETE</b></h5></a>
+                                <br>
+                                <br>
+                                <div>
+                                    <p class="myRow text-right">
+                                        <a class="mb btn btn-success align-middle" data-toggle="collapse" href="#collapseEdit@(info.PersonalInformationId)" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                            <b style="font-size: 20px; border:0px;">EDIT</b>
+                                        </a>
+                                    </p>
+                                    <div class="collapse myWidth" id="collapseEdit@(info.PersonalInformationId)">
+                                        <div class="card card-body">
+                                            <h3 class="text-left"><b>EDIT @info.InfoName.ToUpper()</b></h3>
+                                            <form asp-action="UpdatePersonalInformation" asp-controller="PersonalInformation" asp-route-personalinformationId="@info.PersonalInformationId" method="post">
+                                                <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId" >
+                                                <div class="form-group">
+                                                    <span asp-validation-for="InfoName"></span>
+                                                    <h5 class="text-left"><label asp-for="InfoName"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="InfoName" value="@info.InfoName">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="InfoContent"></span>
+                                                    <h5 class="text-left"><label asp-for="InfoContent"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="InfoContent" value="@EncryptDecrypt.Decrypt(@info.InfoContent)">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="InfoNote"></span>
+                                                    <h5 class="text-left myMarg">Notes:</h5>
+                                                    <input class="form-control form-control-lg" asp-for="InfoNote" value="@info.InfoNote">
+                                                </div>
+                                                <div  class="form-group" style="margin-bottom: 0px;">
+                                                    <button type="submit" class="btn btn-success"><h5><b>UPDATE</b></h5></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

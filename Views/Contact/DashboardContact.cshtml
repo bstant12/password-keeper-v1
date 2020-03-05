@@ -1,0 +1,179 @@
+<style>
+    h5{margin: 0px;}
+    b{display:inline-block;}
+    select{display: : inline-block;}
+    .mb{padding-left: 12px;padding-right: 12px;padding-top: 6px;padding-bottom: 6px;}
+    .myB{margin: 0px;}
+    .myRow{display: inline-block;}
+    .myMarg{margin-bottom: 8px;}
+</style>
+
+@model Contact
+
+<div class="container">
+    <br>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardUser" asp-controller="User">Home</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="LogOut" asp-controller="Home">Log Out</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPassword" asp-controller="Password">Passwords</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardCreditCard" asp-controller="CreditCard">Credit Cards</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardPersonalInformation" asp-controller="PersonalInformation">Personal Information</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link disabled" tabindex="-1" aria-disabled="true">Contacts</a></h5>
+        </li>
+        <li class="nav-item">
+            <h5><a class="nav-link" asp-action="DashboardNote" asp-controller="Note">Notes</a></h5>
+        </li>
+    </ul>
+    <hr>
+    <h1 class="text-center">CONTACTS</h1>
+    <br>
+    <div>
+        <p class="text-center">
+            <a class="btn btn-primary align-middle" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <b>ADD CONTACT</b>
+            </a>
+        </p>
+        <br>
+        <div class="collapse myWidth" id="collapseExample1">
+            <div class="card card-body">
+                <h3>Add Password</h3>
+                <form asp-action="CreateContact" asp-controller="Contact" method="post">
+                    <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId">
+                    <div class="form-group">
+                        <span asp-validation-for="CFirstName"></span>
+                        <h5><label asp-for="CFirstName"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="CFirstName">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="CLastName"></span>
+                        <h5><label asp-for="CLastName"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="CLastName">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="CPhoneNumber"></span>
+                        <h5><label asp-for="CPhoneNumber"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="CPhoneNumber">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="CEmail"></span>
+                        <h5><label asp-for="CEmail"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="CEmail">
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="CRelationship"></span>
+                        <h5><label asp-for="CRelationship"></label></h5>
+                        <input class="form-control form-control-lg" asp-for="CRelationship">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary"><h5>ADD</h5></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="accordion">
+        @foreach(var contact in @ViewBag.AllContacts)
+        {
+            <div class="card">
+                <div class="card-header text-center" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link " data-toggle="collapse" data-target="#collapse@(contact.ContactId)" aria-expanded="true" aria-controls="collapse@(contact.ContactId)">
+                            <h5>@contact.CFirstName.ToUpper() @contact.CLastName.ToUpper()</h5>
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse@(contact.ContactId)" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h3 class="myRow align-middle myFont"><b>@contact.CFirstName.ToUpper() @contact.CLastName.ToUpper()</b></h3>
+                                <br>
+                                <br>
+                                @if(contact.CPhoneNumber != null)
+                                {
+                                    <p class="myRow align-middle"><b>PHONE NUMBER:  </b></p>
+                                    <p class="myRow align-middle" id="p1">@contact.CPhoneNumber</p>
+                                    <br>
+                                }
+                                @if(contact.CEmail != null)
+                                {
+                                    <p class="myRow align-middle"><b>EMAIL:  </b></p>
+                                    <p class="myRow align-middle" id="p1">@contact.CEmail</p>
+                                    <br>
+                                }
+                                @if(contact.CRelationship != null)
+                                {
+                                    <p class="myRow align-middle"><b>RELATIONSHIP:  </b></p>
+                                    <p class="myRow align-middle" id="p1">@contact.CRelationship</p>
+                                    <br>
+                                }
+                            </div> 
+                            <div class="col text-right">
+                                <a asp-action="DeleteContact" asp-controller="Contact" asp-route-contactId="@contact.ContactId" class=" mb text-center badge badge-danger"><h5><b>DELETE</b></h5></a>
+                                <br>
+                                <br>
+                                <div>
+                                    <p class="myRow text-right">
+                                        <a class="mb btn btn-success align-middle" data-toggle="collapse" href="#collapseEdit@(contact.ContactId)" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                            <b style="font-size: 20px; border:0px;">EDIT</b>
+                                        </a>
+                                    </p>
+                                    <div class="collapse myWidth" id="collapseEdit@(contact.ContactId)">
+                                        <div class="card card-body">
+                                            <h3 class="text-left"><b>EDIT </b></h3>
+                                            <form action="/contact/@contact.ContactId/update" method="post">
+                                                <input type="hidden" asp-for="UserId" value="@ViewBag.User.UserId">
+                                                <div class="form-group">
+                                                    <span asp-validation-for="CFirstName"></span>
+                                                    <h5 class="text-left"><label asp-for="CFirstName"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="CFirstName" value="@contact.CFirstName">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="CLastName"></span>
+                                                    <h5 class="text-left"><label asp-for="CLastName"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="CLastName" value="@contact.CLastName">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="CPhoneNumber"></span>
+                                                    <h5 class="text-left"><label asp-for="CPhoneNumber"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="CPhoneNumber" value="@contact.CPhoneNumber">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="CEmail"></span>
+                                                    <h5 class="text-left"><label asp-for="CEmail"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="CEmail" value="@contact.CEmail">
+                                                </div>
+                                                <div class="form-group">
+                                                    <span asp-validation-for="CRelationship"></span>
+                                                    <h5 class="text-left"><label asp-for="CRelationship"></label></h5>
+                                                    <input class="form-control form-control-lg" asp-for="CRelationship" value="@contact.CRelationship">
+                                                </div>
+                                                <div  class="form-group" style="margin-bottom: 0px;">
+                                                    <button type="submit" class="btn btn-success"><h5><b>UPDATE</b></h5></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

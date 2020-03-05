@@ -1,0 +1,53 @@
+<style>
+    h5{
+        margin: 0px;
+    }
+    span {
+        color: red;
+    }
+</style>
+
+@model LoginUser
+
+@{
+    ViewData["Title"] = "Gate Keeper - Sign In";
+}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+            <h1> Gate Keeper</h1>
+        </div>
+
+        <div class="text-right col align-middle">
+            <br>
+            <a asp-action="Index" asp-controller="Home">Register</a>
+        </div>
+    </div>
+    <hr>
+
+    <h2>Log In:</h2>
+    
+    <br>
+
+    <form asp-action="SignIn" asp-controller="Home" method="POST">
+        <div class="form-group">
+            <span asp-validation-for="LoginEmail"></span>
+            <h5><label asp-for="LoginEmail"></label></h5>
+            <input class="form-control form-control-lg" asp-for="LoginEmail">
+        </div>
+        
+        <div class="form-group">
+            <span asp-validation-for="LoginPassword"></span>
+            <h5><label asp-for="LoginPassword"></label></h5>
+            <input class="form-control form-control-lg" asp-for="LoginPassword">
+        </div>
+        
+        <div>
+            <button type="submit" class="btn btn-primary"><h5>LOG IN</h5></button>
+        </div>
+    </form>
+
+    
+</div>
